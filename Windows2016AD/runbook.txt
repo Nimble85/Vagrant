@@ -1,0 +1,2 @@
+vagrant init mwrock/Windows2016
+vagrant up

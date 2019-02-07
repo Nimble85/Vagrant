@@ -1,0 +1,10 @@
+
+Local PC:
+
+Install Visual Studio 2017
+Install Vagrant
+Copy project to "C:\Vagrant\project_1"
+
+cd C:\Vagrant\project_1
+vagrant box add gusztavvargadr/w16s https://app.vagrantup.com/gusztavvargadr/boxes/w16s -2
+vagrant up --provision
