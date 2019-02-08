@@ -1,57 +1,52 @@
 # * Make sure you run this script from a Powershel Admin Prompt!
 # * Make sure Powershell Execution Policy is bypassed to run these scripts:
 # * YOU MAY HAVE TO RUN THIS COMMAND PRIOR TO RUNNING THIS SCRIPT!
-Set-ExecutionPolicy Bypass -Scope Process
 
-# To list all Windows Features: dism /online /Get-Features
-# Get-WindowsOptionalFeature -Online 
-# LIST All IIS FEATURES: 
-# Get-WindowsOptionalFeature -Online | where FeatureName -like 'IIS-*'
+# Get-Command -module ServerManager  
 
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServerRole
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServer
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-CommonHttpFeatures
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpErrors
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpRedirect
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ApplicationDevelopment
+Install-WindowsFeature -name AD-Domain-Services
 
-Enable-WindowsOptionalFeature -online -FeatureName NetFx4Extended-ASPNET45
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-NetFxExtensibility45
+Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools  
 
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HealthAndDiagnostics
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpLogging
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-LoggingLibraries
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-RequestMonitor
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpTracing
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-Security
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-RequestFiltering
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-Performance
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServerManagementTools
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-IIS6ManagementCompatibility
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-Metabase
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ManagementConsole
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-BasicAuthentication
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WindowsAuthentication
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-StaticContent
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-DefaultDocument
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ApplicationInit
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ISAPIExtensions
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ISAPIFilter
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionStatic
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45
+Get-WindowsFeature
 
-# If you need classic ASP (not recommended)
-# Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASP
+# AD-1
+# AD-DC
+###traderevolution  - its name`s domen
+#Добавление директории в AD-1
 
 
-#REM The following optional components require 
-#REM Chocolatey OR Web Platform Installer to install
 
-#REM Install UrlRewrite Module for Extensionless Urls (optional)
-#REM & "C:\Program Files\Microsoft\Web Platform Installer\WebpiCmd-x64.exe" /install /Products:UrlRewrite2 /AcceptEULA /SuppressPostFinish
-choco install urlrewrite -y
+New-ADOrganizationalUnit -Name Sales -Path "DC=traderevolution,DC=COM"
+New-ADOrganizationalUnit -Name Finance -Path "DC=traderevolution,DC=COM"
 
-#REM Install WebDeploy for Deploying to IIS (optional)
-#REM & "C:\Program Files\Microsoft\Web Platform Installer\WebpiCmd-x64.exe" /install /Products:WDeployNoSMO /AcceptEULA /SuppressPostFinish
-choco install webdeploy -y
+
+# Add groups
+
+New-ADGroup -Name "RODC Admins" -SamAccountName RODCAdmins -GroupCategory Security -GroupScope Global -DisplayName "RODC Administrators" -Path "CN=Users,DC=traderevolution,DC=Com" -Description "Members of this group are RODC Administrators"
+New-ADGroup -Name "Reporting" -SamAccountName Reporting -GroupCategory Security -GroupScope Global -DisplayName "Reporting" -Path "CN=Users,DC=traderevolution,DC=Com" -Description "Members of this group are view and create reports about finance state"
+
+
+# Create users
+
+New-ADUser -Name "Петрова Тамара Васильевна" -GivenName "Тамара" -Surname "Петрова" -SamAccountName "t.petrova" -UserPrincipalName "t.petrova@traderevolution.com" -Path "OU=Finance,DC=traderevolution,DC=com" -AccountPassword (Read-Host -AsSecureString "Qw123456") -Enabled $true
+# допилить верхнюю строчку... (не полная и выдаёт запрос на ввод пароля ----править значение:   -AccountPassword (Read-Host -AsSecureString "Qw123456")
+
+
+
+
+######################################################
+######################################################
+########################_________________#############
+########################______FTP________#############
+########################_________________#############
+######################################################
+######################################################
+
+
+
+
+
+
+
+
